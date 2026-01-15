@@ -1676,43 +1676,6 @@ Be concise but thorough. Prioritize critical issues first.</code></pre>
 
         <hr>
 
-        <section id="changelog">
-            <h2>Changelog</h2>
-            <ul>
-                <li><strong>1.2.0</strong> (2026-01-15): MCP tool subset selection (ActiveMCP.json)
-                    <ul style="margin-top: 10px;">
-                        <li>Added <code>ActiveMCP.json</code> for selective MCP tool access (avoids context overflow)</li>
-                        <li>Restructured <code>mcp-configs/</code> to use subdirectories (one per MCP server)</li>
-                        <li>Separated tool selection (ActiveMCP.json) from connection config (config.yaml)</li>
-                        <li>Added <code>selectedTools</code> array with per-tool metadata (enabled, description, required)</li>
-                        <li>Added <code>excludedTools</code> array for explicit tool exclusion</li>
-                        <li>Added <code>contextStrategy</code> field ("subset" vs "all")</li>
-                        <li>Inspired by Langchain's custom tools.json approach</li>
-                    </ul>
-                </li>
-                <li><strong>1.1.0</strong> (2026-01-15): Claude Code sub-agent support
-                    <ul style="margin-top: 10px;">
-                        <li>Added <code>tools</code> field for explicit tool access control</li>
-                        <li>Added model alias support (<code>sonnet</code>, <code>opus</code>, <code>haiku</code>)</li>
-                        <li>Added simplified instruction format for sub-agents</li>
-                        <li>Documented structured vs simplified format detection</li>
-                        <li>Added sub-agent example</li>
-                    </ul>
-                </li>
-                <li><strong>1.0.0</strong> (2026-01-15): Initial Open Agent Format specification
-                    <ul style="margin-top: 10px;">
-                        <li>Defined directory structure</li>
-                        <li>Defined AGENTS.md format</li>
-                        <li>Specified AgentSkills.io compliance</li>
-                        <li>Added harness-specific configuration section</li>
-                        <li>Documented version history support</li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-
-        <hr>
-
         <section id="license">
             <h2>License</h2>
             <p>This specification is released under CC0 1.0 Universal (Public Domain).</p>

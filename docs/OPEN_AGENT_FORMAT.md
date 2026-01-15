@@ -966,33 +966,6 @@ advanced-agent/
 
 ---
 
-## Changelog
-
-- **1.2.0** (2026-01-15): MCP tool subset selection (ActiveMCP.json)
-  - Added `ActiveMCP.json` for selective MCP tool access (avoids context overflow)
-  - Restructured `mcp-configs/` to use subdirectories (one per MCP server)
-  - Separated tool selection (ActiveMCP.json) from connection config (config.yaml)
-  - Added `selectedTools` array with per-tool metadata (enabled, description, required)
-  - Added `excludedTools` array for explicit tool exclusion
-  - Added `contextStrategy` field ("subset" vs "all")
-  - Inspired by Langchain's custom tools.json approach
-
-- **1.1.0** (2026-01-15): Claude Code sub-agent support
-  - Added `tools` field for explicit tool access control
-  - Added model alias support (`sonnet`, `opus`, `haiku`)
-  - Added simplified instruction format for sub-agents
-  - Documented structured vs simplified format detection
-  - Added sub-agent example
-
-- **1.0.0** (2026-01-15): Initial Open Agent Format specification
-  - Defined directory structure
-  - Defined AGENTS.md format
-  - Specified AgentSkills.io compliance
-  - Added harness-specific configuration section
-  - Documented version history support
-
----
-
 ## License
 
 This specification is released under CC0 1.0 Universal (Public Domain).
