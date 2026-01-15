@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Agent Format (OAF) Specification v1.2.0</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            line-height: 1.7;
+            color: #2c2c2c;
+            background: #f5f3ef;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #d4875f;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95em;
+            margin-bottom: 40px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #d4875f;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        header {
+            text-align: left;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            border-bottom: 3px solid #d4875f;
+        }
+
+        h1 {
+            font-size: 3.2em;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .meta {
+            color: #7a7166;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .meta strong {
+            color: #5a5349;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: #2c2c2c;
+            margin: 60px 0 30px 0;
+            padding-top: 40px;
+            font-size: 2.2em;
+            font-weight: 300;
+            letter-spacing: -1px;
+            border-top: 2px solid #d4d0cb;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        h3 {
+            color: #2c2c2c;
+            margin: 40px 0 20px 0;
+            font-size: 1.6em;
+            font-weight: 400;
+        }
+
+        h4 {
+            color: #2c2c2c;
+            margin: 30px 0 15px 0;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #5a5349;
+            font-size: 1.05em;
+        }
+
+        ul, ol {
+            margin-left: 0;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+            color: #5a5349;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.05em;
+        }
+
+        ul li::before {
+            content: "•";
+            color: #d4875f;
+            font-size: 1.5em;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+
+        ol {
+            padding-left: 30px;
+        }
+
+        ol li {
+            margin-bottom: 18px;
+            color: #5a5349;
+            padding-left: 15px;
+            font-size: 1.05em;
+        }
+
+        code {
+            background: #ebe8e3;
+            padding: 3px 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #2c2c2c;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #2c2c2c;
+            color: #f5f3ef;
+            padding: 30px;
+            overflow-x: auto;
+            margin: 30px 0;
+            border-left: 4px solid #4a9b9b;
+            border-radius: 4px;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #f5f3ef;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        a {
+            color: #d4875f;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        a:hover {
+            border-bottom-color: #d4875f;
+        }
+
+        strong {
+            font-weight: 500;
+            color: #2c2c2c;
+        }
+
+        em {
+            font-style: italic;
+            color: #5a5349;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #d4d0cb;
+            margin: 60px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        thead {
+            background: #d4875f;
+            color: white;
+        }
+
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #ebe8e3;
+            color: #5a5349;
+            font-size: 0.95em;
+        }
+
+        tbody tr:hover {
+            background: #faf9f7;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .notice {
+            background: #fef7ed;
+            border-left: 4px solid #ea9854;
+            padding: 30px 40px;
+            margin: 40px 0;
+        }
+
+        .notice p {
+            margin-bottom: 10px;
+        }
+
+        .notice p:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote {
+            border-left: 4px solid #4a9b9b;
+            padding: 20px 30px;
+            margin: 30px 0;
+            background: white;
+            color: #5a5349;
+            font-style: italic;
+        }
+
+        .toc {
+            background: white;
+            padding: 30px 40px;
+            margin: 40px 0;
+            border-left: 4px solid #4a9b9b;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+
+        .toc ul {
+            margin-bottom: 0;
+        }
+
+        .toc ul li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: #d4875f;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 100px;
+            padding: 40px 20px;
+            border-top: 2px solid #d4d0cb;
+            color: #7a7166;
+            font-size: 0.95em;
+        }
+
+        footer p {
+            color: #7a7166;
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: #d4875f;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 2.4em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            h3 {
+                font-size: 1.4em;
+            }
+
+            pre {
+                padding: 20px;
+                font-size: 0.85em;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Back to Home</a>
+
+        <header>
+            <h1>Open Agent Format (OAF) Specification</h1>
+            <div class="meta">
+                <strong>Version:</strong> 1.2.0<br>
+                <strong>Date:</strong> 2026-01-15<br>
+                <strong>Status:</strong> Draft
+            </div>
+        </header>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>The Open Agent Format (OAF) is an open, interoperable format for defining AI agents with their instructions, compositions, and configurations. OAF is designed to work across multiple agent harnesses while maintaining a single canonical representation.</p>
+
+            <h3>Design Principles</h3>
+            <ol>
+                <li><strong>Filesystem as Source of Truth</strong> - The directory structure and files define the agent</li>
+                <li><strong>Interoperable</strong> - Works across Claude Code, Goose, Deep Agents, Letta, and other harnesses</li>
+                <li><strong>Composable</strong> - Agents reference skills, packs, weblets, MCPs, and other agents</li>
+                <li><strong>Version-aware</strong> - Supports semantic versioning and version history</li>
+                <li><strong>Human-readable</strong> - Markdown for instructions, YAML for metadata</li>
+                <li><strong>Harness-agnostic</strong> - Core format independent of any specific harness</li>
+            </ol>
+        </section>
+
+        <hr>
+
+        <section id="directory-structure">
+            <h2>Directory Structure</h2>
+            <p>An agent in OAF is a <strong>directory</strong> containing multiple files and subdirectories.</p>
+
+            <h3>Complete Structure (with all optional directories)</h3>
+            <pre><code>vendor-name/agent-name/
+├── AGENTS.md                    # Main manifest (required)
+├── README.md                    # Human documentation (generated if absent)
+├── LICENSE                      # License file (generated if absent)
+│
+├── versions/                    # Version history (optional)
+│   ├── v1.0.0/
+│   │   └── AGENTS.md
+│   ├── v1.1.0/
+│   │   └── AGENTS.md
+│   └── v2.0.0/
+│       └── AGENTS.md
+│
+├── skills/                      # Local/custom skills (optional)
+│   ├── custom-skill-1/
+│   │   ├── SKILL.md            # Skill manifest (required)
+│   │   ├── resources/          # Data files, configs (optional per agentskills.io)
+│   │   │   ├── config.json
+│   │   │   └── data.csv
+│   │   ├── scripts/            # Executable scripts (optional per agentskills.io)
+│   │   │   ├── setup.sh
+│   │   │   └── run.py
+│   │   └── assets/             # Images, diagrams (optional per agentskills.io)
+│   │       └── diagram.png
+│   └── custom-skill-2/
+│       └── SKILL.md
+│
+├── mcp-configs/                 # MCP server configurations (optional)
+│   ├── filesystem/
+│   │   ├── ActiveMCP.json      # Tool subset selection
+│   │   └── config.yaml         # Connection config
+│   ├── database/
+│   │   ├── ActiveMCP.json
+│   │   └── config.yaml
+│   └── stripe-api/
+│       ├── ActiveMCP.json
+│       └── config.yaml
+│
+├── examples/                    # Usage examples (optional)
+│   ├── debugging-workflow.md
+│   └── feature-implementation.md
+│
+├── tests/                       # Test scenarios (optional)
+│   ├── unit-tests.yaml
+│   └── integration-tests.yaml
+│
+├── docs/                        # Additional documentation (optional)
+│   ├── architecture.md
+│   └── deployment.md
+│
+└── assets/                      # Agent-level media files (optional)
+    ├── logo.png
+    └── architecture-diagram.png</code></pre>
+
+            <h3>Minimal Structure</h3>
+            <p>At minimum, an OAF agent requires only:</p>
+            <pre><code>vendor-name/agent-name/
+└── AGENTS.md</code></pre>
+            <p>All other files and directories are optional and generated as needed.</p>
+        </section>
+
+        <hr>
+
+        <section id="agents-md-format">
+            <h2>AGENTS.md Format</h2>
+            <p>The <code>AGENTS.md</code> file is the primary manifest for an OAF agent.</p>
+
+            <h3>Structure</h3>
+            <pre><code>---
+# === IDENTITY (Required) ===
+
+name: "Display Name"
+vendorKey: "vendor-namespace"
+agentKey: "agent-identifier"
+version: "1.0.0"
+slug: "vendor-namespace/agent-identifier"
+
+# === METADATA (Required) ===
+
+description: "Brief description of agent purpose and capabilities"
+author: "@vendor-handle"
+license: "MIT"
+tags: ["tag1", "tag2", "tag3"]
+
+# === COMPOSITION (Optional) ===
+
+# Skills - References to skills (registry or local)
+skills:
+  - vendor: "anthropic"
+    skill: "web-search"
+    version: "1.2.0"
+    source: "registry"        # "registry" or "local"
+    required: true            # true or false
+  - vendor: "local"
+    skill: "custom-tool"
+    version: "1.0.0"
+    source: "local"           # References ./skills/custom-tool/
+
+# Packs - Collections of skills
+packs:
+  - vendor: "langchain"
+    pack: "python-dev-tools"
+    version: "1.0.0"
+    required: false
+
+# Weblets - Web-based tools/interfaces
+weblets:
+  - vendor: "stripe"
+    weblet: "payment-api"
+    version: "2.0.0"
+    launch: "onDemand"        # "onDemand", "background", "foreground"
+
+# MCP Servers - Model Context Protocol servers
+mcpServers:
+  - vendor: "block"
+    server: "filesystem"
+    version: "1.0.0"
+    configDir: "mcp-configs/filesystem"  # Contains ActiveMCP.json + config.yaml
+    required: true
+
+# Sub-Agents - Nested agent delegation
+agents:
+  - vendor: "openai"
+    agent: "code-reviewer"
+    version: "1.5.0"
+    role: "reviewer"
+    delegations: ["code-quality", "security-check"]
+    required: false
+
+# === ORCHESTRATION (Optional) ===
+
+orchestration:
+  entrypoint: "main"          # Primary agent entrypoint
+  fallback: "error-handler"   # Fallback agent on failure
+  triggers:
+    - event: "code-change"
+      action: "review"
+    - event: "deployment"
+      action: "validate"
+
+# === TOOLS (Optional) ===
+
+# Explicit tool access (Claude Code sub-agent style)
+tools: ["Read", "Edit", "Bash", "Glob", "Grep"]
+
+# === CONFIGURATION (Optional) ===
+
+config:
+  temperature: 0.7
+  max_tokens: 4096
+  require_confirmation: false
+  tools:
+    allowed: ["bash", "python", "edit", "read", "web_fetch"]
+    denied: ["system-admin", "network-scan"]
+
+# === MEMORY (Optional, for stateful agents) ===
+
+memory:
+  type: "editable"            # "editable" or "read-only"
+  blocks:
+    personality: "default"
+    user_context: "default"
+
+# === MODEL (Optional) ===
+
+# Full format
+model:
+  provider: "anthropic"
+  name: "claude-sonnet-4-5"
+  embedding: "voyage-2"
+
+# OR simplified alias format (Claude Code style)
+model: "sonnet"  # "sonnet", "opus", or "haiku"
+
+# === HARNESS-SPECIFIC (Optional) ===
+
+harnessConfig:
+  claude-code:
+    allowed-tools: ["bash", "edit", "read"]
+    progressive-disclosure: true
+  goose:
+    docker-image: "python:3.11"
+    environment:
+      PYTHON_VERSION: "3.11"
+  deep-agents:
+    skills-middleware: true
+    auto-load: true
+  letta:
+    stateful: true
+    memory-blocks: ["personality", "user_context"]
+---
+
+# Agent Purpose
+
+Describe the agent's primary role, expertise, and what problems it solves.
+
+## Core Responsibilities
+
+- Primary responsibility 1
+- Primary responsibility 2
+- Primary responsibility 3
+
+## Capabilities
+
+### Domain Knowledge
+What the agent knows about and can assist with.
+
+### Technical Skills
+- Programming languages
+- Tools and frameworks
+- Protocols and standards
+
+### Operational Skills
+- Task planning and decomposition
+- Error handling and recovery
+- Context management
+
+## Communication Style
+
+How the agent interacts with users:
+
+- **Tone**: Professional, friendly, concise
+- **Verbosity**: Detailed explanations with examples
+- **Format**: Structured responses with code blocks
+- **Language**: Technical but accessible
+
+## Decision-Making Framework
+
+How the agent approaches problems:
+
+1. **Analysis**: Understand requirements and constraints
+2. **Planning**: Break down into subtasks
+3. **Execution**: Implement with best practices
+4. **Validation**: Test and verify results
+5. **Iteration**: Refine based on feedback
+
+## Behavioral Guidelines
+
+### Do:
+- Always explain reasoning
+- Ask clarifying questions when uncertain
+- Provide multiple options when appropriate
+- Document code and decisions
+- Follow project conventions
+
+### Don't:
+- Make assumptions about requirements
+- Skip error handling
+- Ignore security best practices
+- Override user preferences without asking
+
+## Tool Usage Patterns
+
+Describe how the agent uses available tools.
+
+### File Operations
+When and how to read, write, edit files.
+
+### Code Execution
+Safe execution practices, sandboxing, validation.
+
+### External APIs
+Rate limiting, error handling, data validation.
+
+## Delegation Strategy
+
+When this agent delegates to sub-agents or skills:
+
+- **Condition**: Describe when delegation occurs
+- **Handoff**: How context is provided
+- **Monitoring**: How progress is tracked
+- **Integration**: How results are merged
+
+## Limitations & Boundaries
+
+- List limitations
+- Define boundaries
+- Specify constraints
+- Note restrictions
+
+## Examples
+
+Provide usage examples inline or reference `examples/` directory.
+
+### Example 1: [Scenario Name]
+```markdown
+**User**: [User request]
+
+**Agent**: [Agent response with reasoning]
+```
+
+### Example 2: [Scenario Name]
+```markdown
+**User**: [User request]
+
+**Agent**: [Agent response with steps]
+```
+
+## Version History
+
+- **1.0.0** (2026-01-15): Initial release
+- **1.1.0** (TBD): Planned features
+
+## License
+
+Specify license or reference LICENSE file.
+
+## Support
+
+Contact information, links to documentation, community channels.</code></pre>
+        </section>
+
+        <hr>
+
+        <section id="instruction-formats">
+            <h2>Instruction Formats</h2>
+            <p>OAF supports two instruction formats in the Markdown body (after the YAML frontmatter):</p>
+
+            <h3>Structured Format (Main Agents)</h3>
+            <p>Use structured Markdown with sections for complex, full-featured agents:</p>
+            <pre><code>---
+name: "Python Assistant"
+# ... frontmatter ...
+---
+
+# Agent Purpose
+Detailed description...
+
+## Capabilities
+### Domain Knowledge
+...
+
+## Communication Style
+...</code></pre>
+            <p><strong>Best for:</strong> Main agents, complex agents, agents requiring extensive documentation.</p>
+
+            <h3>Simplified Format (Sub-Agents)</h3>
+            <p>Use direct system prompt for specialized, focused sub-agents (Claude Code style):</p>
+            <pre><code>---
+name: "code-reviewer"
+description: "Reviews code for quality and best practices"
+tools: ["Read", "Glob", "Grep"]
+model: "sonnet"
+---
+
+You are a code reviewer. When invoked, analyze the code and provide specific, actionable feedback on quality, security, and best practices.</code></pre>
+            <p><strong>Best for:</strong> Sub-agents, specialized helpers, task-specific agents.</p>
+            <p><strong>Detection:</strong> If the body starts with <code>#</code>, treat as structured format. Otherwise, treat as direct system prompt.</p>
+        </section>
+
+        <hr>
+
+        <section id="field-definitions">
+            <h2>Field Definitions</h2>
+
+            <h3>Identity Fields (Required)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td>string</td>
+                        <td>Display name (1-100 chars)</td>
+                    </tr>
+                    <tr>
+                        <td><code>vendorKey</code></td>
+                        <td>string</td>
+                        <td>Publisher namespace (kebab-case)</td>
+                    </tr>
+                    <tr>
+                        <td><code>agentKey</code></td>
+                        <td>string</td>
+                        <td>Agent identifier (kebab-case)</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version (e.g., "1.0.0")</td>
+                    </tr>
+                    <tr>
+                        <td><code>slug</code></td>
+                        <td>string</td>
+                        <td>Unique identifier: <code>vendorKey/agentKey</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Metadata Fields (Required)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>description</code></td>
+                        <td>string</td>
+                        <td>Brief description (50-500 chars)</td>
+                    </tr>
+                    <tr>
+                        <td><code>author</code></td>
+                        <td>string</td>
+                        <td>Author handle or name (e.g., "@vendor")</td>
+                    </tr>
+                    <tr>
+                        <td><code>license</code></td>
+                        <td>string</td>
+                        <td>SPDX license identifier (e.g., "MIT")</td>
+                    </tr>
+                    <tr>
+                        <td><code>tags</code></td>
+                        <td>array[string]</td>
+                        <td>Categorization tags</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Composition Fields (Optional)</h3>
+
+            <h4>Skills</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>Skill vendor namespace</td>
+                    </tr>
+                    <tr>
+                        <td><code>skill</code></td>
+                        <td>string</td>
+                        <td>Skill identifier</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version or version constraint</td>
+                    </tr>
+                    <tr>
+                        <td><code>source</code></td>
+                        <td>string</td>
+                        <td>"registry" or "local"</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>Whether skill is mandatory</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Packs</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>Pack vendor namespace</td>
+                    </tr>
+                    <tr>
+                        <td><code>pack</code></td>
+                        <td>string</td>
+                        <td>Pack identifier</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>Whether pack is mandatory</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Weblets</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>Weblet vendor namespace</td>
+                    </tr>
+                    <tr>
+                        <td><code>weblet</code></td>
+                        <td>string</td>
+                        <td>Weblet identifier</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version</td>
+                    </tr>
+                    <tr>
+                        <td><code>launch</code></td>
+                        <td>string</td>
+                        <td>Launch mode: "onDemand", "background", "foreground"</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>MCP Servers</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>MCP vendor namespace</td>
+                    </tr>
+                    <tr>
+                        <td><code>server</code></td>
+                        <td>string</td>
+                        <td>Server identifier</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version</td>
+                    </tr>
+                    <tr>
+                        <td><code>configDir</code></td>
+                        <td>string</td>
+                        <td>Path to config directory (contains ActiveMCP.json + config.yaml)</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>Whether MCP server is mandatory</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Note:</strong> Tool selection is now managed via <code>ActiveMCP.json</code> in the config directory to avoid context overflow.</p>
+
+            <h4>Sub-Agents</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>Agent vendor namespace</td>
+                    </tr>
+                    <tr>
+                        <td><code>agent</code></td>
+                        <td>string</td>
+                        <td>Agent identifier</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>Semantic version</td>
+                    </tr>
+                    <tr>
+                        <td><code>role</code></td>
+                        <td>string</td>
+                        <td>Role in composition (e.g., "reviewer")</td>
+                    </tr>
+                    <tr>
+                        <td><code>delegations</code></td>
+                        <td>array[string]</td>
+                        <td>Tasks delegated to this agent</td>
+                    </tr>
+                    <tr>
+                        <td><code>required</code></td>
+                        <td>boolean</td>
+                        <td>Whether sub-agent is mandatory</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Orchestration Fields (Optional)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>entrypoint</code></td>
+                        <td>string</td>
+                        <td>Primary agent entrypoint</td>
+                    </tr>
+                    <tr>
+                        <td><code>fallback</code></td>
+                        <td>string</td>
+                        <td>Fallback agent on failure</td>
+                    </tr>
+                    <tr>
+                        <td><code>triggers</code></td>
+                        <td>array[object]</td>
+                        <td>Event-action mappings</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Tools Field (Optional)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>tools</code></td>
+                        <td>array[string]</td>
+                        <td>Explicit tool access list (Claude Code style). Example: <code>["Read", "Edit", "Bash", "Glob", "Grep"]</code></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Note:</strong> The <code>tools</code> field provides simple, explicit tool access control (Claude Code sub-agent style). For more complex tool configuration, use <code>config.tools.allowed</code> and <code>config.tools.denied</code>.</p>
+
+            <h3>Configuration Fields (Optional)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>temperature</code></td>
+                        <td>number</td>
+                        <td>Model temperature (0.0-1.0)</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_tokens</code></td>
+                        <td>number</td>
+                        <td>Maximum output tokens</td>
+                    </tr>
+                    <tr>
+                        <td><code>require_confirmation</code></td>
+                        <td>boolean</td>
+                        <td>Require user confirmation for actions</td>
+                    </tr>
+                    <tr>
+                        <td><code>tools.allowed</code></td>
+                        <td>array[string]</td>
+                        <td>Allowed tools</td>
+                    </tr>
+                    <tr>
+                        <td><code>tools.denied</code></td>
+                        <td>array[string]</td>
+                        <td>Denied tools</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Memory Fields (Optional)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>type</code></td>
+                        <td>string</td>
+                        <td>"editable" or "read-only"</td>
+                    </tr>
+                    <tr>
+                        <td><code>blocks</code></td>
+                        <td>object</td>
+                        <td>Memory block definitions</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Model Fields (Optional)</h3>
+            <p>The <code>model</code> field supports two formats:</p>
+
+            <h4>Full Format (Object):</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>provider</code></td>
+                        <td>string</td>
+                        <td>Model provider (e.g., "anthropic")</td>
+                    </tr>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td>string</td>
+                        <td>Model name (e.g., "claude-sonnet-4-5")</td>
+                    </tr>
+                    <tr>
+                        <td><code>embedding</code></td>
+                        <td>string</td>
+                        <td>Embedding model name</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Example:</p>
+            <pre><code>model:
+  provider: "anthropic"
+  name: "claude-sonnet-4-5"
+  embedding: "voyage-2"</code></pre>
+
+            <h4>Simplified Format (String Alias):</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>"sonnet"</code></td>
+                        <td>Claude Sonnet (latest)</td>
+                    </tr>
+                    <tr>
+                        <td><code>"opus"</code></td>
+                        <td>Claude Opus (latest)</td>
+                    </tr>
+                    <tr>
+                        <td><code>"haiku"</code></td>
+                        <td>Claude Haiku (latest)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Example:</p>
+            <pre><code>model: "sonnet"</code></pre>
+            <p><strong>Best for:</strong> Sub-agents and simple configurations (Claude Code style)</p>
+
+            <h3>Harness-Specific Configuration (Optional)</h3>
+            <p>The <code>harnessConfig</code> section allows harness providers to specify custom configuration for their platform.</p>
+            <p><strong>Format:</strong></p>
+            <pre><code>harnessConfig:
+  vendor-product:
+    # Harness-specific fields in any format
+    key: value
+    nested:
+      field: value</code></pre>
+            <p>Each harness provider identifies themselves by <code>vendor/product</code> key (e.g., <code>claude-code</code>, <code>goose</code>, <code>deep-agents</code>, <code>letta</code>) and can add any fields they need in any format (YAML, JSON-like structures, arrays, etc.).</p>
+            <p><strong>This section is completely free-form and harness-defined.</strong></p>
+        </section>
+
+        <hr>
+
+        <section id="skills-directory">
+            <h2>Skills Directory Format (AgentSkills.io)</h2>
+            <p>When an agent includes local/custom skills, they are placed in the <code>skills/</code> directory following the <a href="https://agentskills.io/" target="_blank">AgentSkills.io specification</a>.</p>
+
+            <h3>Skill Directory Structure</h3>
+            <pre><code>skills/skill-name/
+├── SKILL.md                    # Skill manifest (required)
+├── resources/                  # Data files, configs (optional)
+│   ├── config.json
+│   ├── data.csv
+│   └── prompts/
+│       └── system.txt
+├── scripts/                    # Executable scripts (optional)
+│   ├── setup.sh
+│   ├── run.py
+│   └── cleanup.sh
+└── assets/                     # Images, diagrams (optional)
+    ├── icon.png
+    └── diagram.svg</code></pre>
+
+            <h3>SKILL.md Format</h3>
+            <pre><code>---
+name: "skill-name"
+description: "Brief description of what this skill does and when to use it"
+license: "MIT"
+metadata:
+  author: "vendor-name"
+  version: "1.0.0"
+allowed-tools: ["bash", "python", "edit"]
+---
+
+# Skill Purpose
+
+Instructions for using this skill.
+
+## When to Use
+
+Trigger conditions.
+
+## Usage
+
+Examples and patterns.</code></pre>
+        </section>
+
+        <hr>
+
+        <section id="mcp-configs">
+            <h2>MCP Configs Directory</h2>
+            <p>MCP server configurations are stored in <code>mcp-configs/</code> with each MCP server having its own subdirectory containing two files:</p>
+            <ol>
+                <li><strong>ActiveMCP.json</strong> - Tool subset selection (avoids context overflow)</li>
+                <li><strong>config.yaml</strong> - Connection and permission configuration</li>
+            </ol>
+
+            <h3>Why ActiveMCP.json?</h3>
+            <p>MCP servers can expose dozens or hundreds of tools. Including all tool descriptions in the agent's context window can cause:</p>
+            <ul>
+                <li><strong>Context overflow</strong> - Exceeding model token limits</li>
+                <li><strong>Degraded performance</strong> - Too many irrelevant tools to choose from</li>
+                <li><strong>Increased latency</strong> - Larger context = slower processing</li>
+            </ul>
+            <p><strong>ActiveMCP.json</strong> allows agents to specify only the subset of tools they need from each MCP server, keeping context lean and focused.</p>
+            <p><strong>Inspired by:</strong> Langchain's custom <code>tools.json</code> approach for selective MCP tool access.</p>
+
+            <h3>Directory Structure</h3>
+            <pre><code>mcp-configs/
+├── filesystem/
+│   ├── ActiveMCP.json      # Tool subset selection
+│   └── config.yaml         # Connection config
+└── database/
+    ├── ActiveMCP.json
+    └── config.yaml</code></pre>
+
+            <h3>ActiveMCP.json Format</h3>
+            <p><strong>Purpose:</strong> Specify which tools to make available from the MCP server.</p>
+            <pre><code>{
+  "vendor": "block",
+  "server": "filesystem",
+  "version": "1.0.0",
+  "selectedTools": [
+    {
+      "name": "read_file",
+      "enabled": true,
+      "description": "Read contents of a file",
+      "required": true
+    },
+    {
+      "name": "write_file",
+      "enabled": true,
+      "description": "Write content to a file",
+      "required": true
+    },
+    {
+      "name": "list_directory",
+      "enabled": true,
+      "description": "List files in a directory",
+      "required": false
+    }
+  ],
+  "excludedTools": [
+    "delete_file",
+    "move_file",
+    "chmod"
+  ],
+  "contextStrategy": "subset"
+}</code></pre>
+
+            <h4>Fields:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>MCP server vendor</td>
+                    </tr>
+                    <tr>
+                        <td><code>server</code></td>
+                        <td>string</td>
+                        <td>MCP server name</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>MCP server version</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectedTools</code></td>
+                        <td>array</td>
+                        <td>Tools to include (with metadata)</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectedTools[].name</code></td>
+                        <td>string</td>
+                        <td>Tool name</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectedTools[].enabled</code></td>
+                        <td>boolean</td>
+                        <td>Whether tool is active</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectedTools[].description</code></td>
+                        <td>string</td>
+                        <td>Custom description (optional, overrides server default)</td>
+                    </tr>
+                    <tr>
+                        <td><code>selectedTools[].required</code></td>
+                        <td>boolean</td>
+                        <td>Whether tool is required for agent operation</td>
+                    </tr>
+                    <tr>
+                        <td><code>excludedTools</code></td>
+                        <td>array[string]</td>
+                        <td>Tools to explicitly exclude</td>
+                    </tr>
+                    <tr>
+                        <td><code>contextStrategy</code></td>
+                        <td>string</td>
+                        <td>"subset" (only selected tools) or "all" (all tools)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>config.yaml Format</h3>
+            <p><strong>Purpose:</strong> Connection details, authentication, permissions.</p>
+            <pre><code>vendor: "block"
+server: "filesystem"
+version: "1.0.0"
+
+# Connection
+connection:
+  type: "sse"                    # "sse", "http", "stdio"
+  url: "http://localhost:8811/sse"
+  timeout: 60
+
+# Authentication (optional)
+auth:
+  type: "bearer"                 # "bearer", "api-key", "oauth"
+  token: "${FILESYSTEM_TOKEN}"   # Environment variable reference
+
+# Permissions (optional)
+permissions:
+  allow_paths: ["/workspace", "/tmp"]
+  deny_paths: ["/system", "/etc"]
+  max_file_size: "10MB"
+  read_only: false
+
+# Rate limiting (optional)
+rate_limit:
+  requests_per_minute: 60
+  burst: 10</code></pre>
+
+            <h4>Fields:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>vendor</code></td>
+                        <td>string</td>
+                        <td>MCP server vendor</td>
+                    </tr>
+                    <tr>
+                        <td><code>server</code></td>
+                        <td>string</td>
+                        <td>MCP server name</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code></td>
+                        <td>string</td>
+                        <td>MCP server version</td>
+                    </tr>
+                    <tr>
+                        <td><code>connection.type</code></td>
+                        <td>string</td>
+                        <td>Connection protocol: "sse", "http", "stdio"</td>
+                    </tr>
+                    <tr>
+                        <td><code>connection.url</code></td>
+                        <td>string</td>
+                        <td>Server endpoint URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>connection.timeout</code></td>
+                        <td>number</td>
+                        <td>Request timeout (seconds)</td>
+                    </tr>
+                    <tr>
+                        <td><code>auth.type</code></td>
+                        <td>string</td>
+                        <td>Auth method: "bearer", "api-key", "oauth"</td>
+                    </tr>
+                    <tr>
+                        <td><code>auth.token</code></td>
+                        <td>string</td>
+                        <td>Auth token (supports env vars: <code>${VAR_NAME}</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><code>permissions</code></td>
+                        <td>object</td>
+                        <td>Access control rules (server-specific)</td>
+                    </tr>
+                    <tr>
+                        <td><code>rate_limit</code></td>
+                        <td>object</td>
+                        <td>Rate limiting configuration</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example: Filesystem MCP</h3>
+            <h4>mcp-configs/filesystem/ActiveMCP.json</h4>
+            <pre><code>{
+  "vendor": "block",
+  "server": "filesystem",
+  "version": "1.0.0",
+  "selectedTools": [
+    {
+      "name": "read_file",
+      "enabled": true,
+      "description": "Read file contents for analysis",
+      "required": true
+    },
+    {
+      "name": "list_directory",
+      "enabled": true,
+      "description": "List directory contents",
+      "required": false
+    }
+  ],
+  "excludedTools": ["delete_file", "chmod", "chown"],
+  "contextStrategy": "subset"
+}</code></pre>
+
+            <h4>mcp-configs/filesystem/config.yaml</h4>
+            <pre><code>vendor: "block"
+server: "filesystem"
+version: "1.0.0"
+
+connection:
+  type: "sse"
+  url: "http://localhost:8811/sse"
+  timeout: 60
+
+permissions:
+  allow_paths: ["/workspace", "/project"]
+  deny_paths: ["/system", "/etc", "/root"]
+  read_only: false</code></pre>
+        </section>
+
+        <hr>
+
+        <section id="version-history">
+            <h2>Version History Support</h2>
+            <p>Agents can maintain version history in the <code>versions/</code> directory.</p>
+            <p><strong>Structure:</strong></p>
+            <pre><code>versions/
+├── v1.0.0/
+│   └── AGENTS.md
+├── v1.1.0/
+│   └── AGENTS.md
+└── v2.0.0/
+    └── AGENTS.md</code></pre>
+            <p>The root <code>AGENTS.md</code> represents the current/latest version.</p>
+        </section>
+
+        <hr>
+
+        <section id="file-generation">
+            <h2>File Generation Guidelines</h2>
+            <p>When generating an OAF agent directory:</p>
+
+            <h3>Required Files</h3>
+            <ol>
+                <li><strong>AGENTS.md</strong> - Main manifest with all metadata and instructions</li>
+            </ol>
+
+            <h3>Auto-Generated Files (if missing)</h3>
+            <ol start="2">
+                <li><strong>README.md</strong> - Human-readable documentation derived from AGENTS.md</li>
+                <li><strong>LICENSE</strong> - License file based on <code>license</code> field in AGENTS.md</li>
+            </ol>
+
+            <h3>Conditional Directories (only if data exists)</h3>
+            <ol start="4">
+                <li><strong>skills/</strong> - Only if agent has local skills (<code>source: "local"</code>)</li>
+                <li><strong>mcp-configs/</strong> - Only if agent has MCP server references</li>
+                <li><strong>versions/</strong> - Only if version history should be preserved</li>
+                <li><strong>examples/</strong> - Only if examples exist</li>
+                <li><strong>tests/</strong> - Only if test scenarios exist</li>
+                <li><strong>docs/</strong> - Only if additional documentation exists</li>
+                <li><strong>assets/</strong> - Only if media files exist</li>
+            </ol>
+        </section>
+
+        <hr>
+
+        <section id="compliance">
+            <h2>Compliance & Standards</h2>
+            <p>The Open Agent Format complies with and builds upon:</p>
+            <ul>
+                <li><strong><a href="https://agents.md/" target="_blank">AGENTS.md</a></strong> - OpenAI's universal agent standard</li>
+                <li><strong><a href="https://agentskills.io/" target="_blank">AgentSkills.io</a></strong> - Anthropic/OpenAI skills specification</li>
+                <li><strong>Semantic Versioning</strong> - Version constraints follow <a href="https://semver.org/" target="_blank">semver.org</a></li>
+                <li><strong>SPDX Licenses</strong> - License identifiers follow <a href="https://spdx.org/" target="_blank">spdx.org</a></li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section id="export-compatibility">
+            <h2>Export Compatibility</h2>
+            <p>OAF is designed to export to multiple harness formats:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Harness</th>
+                        <th>Export Format</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Claude Code</strong></td>
+                        <td><code>~/.claude/skills/vendor/agent/</code></td>
+                        <td>Converts to SKILL.md format</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Goose</strong></td>
+                        <td><code>~/.config/goose/extensions/vendor/agent/</code></td>
+                        <td>Generates AGENTS.md</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deep Agents</strong></td>
+                        <td><code>~/.deepagents/agent-name/</code></td>
+                        <td>Splits into agent.md + skills/</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Letta</strong></td>
+                        <td><code>agent-name.af</code></td>
+                        <td>Converts to Agent File JSON</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Export procedures and tooling specifics are implementation-defined and not part of this specification.</p>
+        </section>
+
+        <hr>
+
+        <section id="validation">
+            <h2>Validation (Informative)</h2>
+            <p>While validation is implementation-defined, OAF suggests validating:</p>
+            <ol>
+                <li><strong>Required fields present</strong> - Identity and metadata fields exist</li>
+                <li><strong>Valid formats</strong> - Semantic versions, kebab-case identifiers</li>
+                <li><strong>YAML validity</strong> - Frontmatter parses correctly</li>
+                <li><strong>Markdown structure</strong> - At least one <code>##</code> heading in instructions</li>
+            </ol>
+            <p>Advanced validation (circular dependencies, version conflicts, reference resolution) is the responsibility of agent harnesses and tooling.</p>
+        </section>
+
+        <hr>
+
+        <section id="examples">
+            <h2>Examples</h2>
+
+            <h3>Minimal Agent</h3>
+            <pre><code>minimal-agent/
+└── AGENTS.md</code></pre>
+            <p><strong>AGENTS.md:</strong></p>
+            <pre><code>---
+name: "Simple Assistant"
+vendorKey: "acme"
+agentKey: "simple"
+version: "1.0.0"
+slug: "acme/simple"
+description: "A simple helpful assistant"
+author: "@acme"
+license: "MIT"
+tags: ["assistant"]
+---
+
+# Agent Purpose
+
+I am a simple helpful assistant.
+
+## Core Responsibilities
+
+- Answer questions
+- Provide assistance</code></pre>
+
+            <h3>Simplified Sub-Agent (Claude Code Style)</h3>
+            <pre><code>code-reviewer/
+└── AGENTS.md</code></pre>
+            <p><strong>AGENTS.md:</strong></p>
+            <pre><code>---
+name: "code-reviewer"
+vendorKey: "acme"
+agentKey: "code-reviewer"
+version: "1.0.0"
+slug: "acme/code-reviewer"
+description: "Reviews code for quality and best practices"
+author: "@acme"
+license: "MIT"
+tags: ["code-review", "quality"]
+tools: ["Read", "Glob", "Grep"]
+model: "sonnet"
+---
+
+You are a code reviewer. When invoked, analyze the code and provide specific, actionable feedback on:
+
+- Code quality and readability
+- Security vulnerabilities
+- Performance issues
+- Best practices adherence
+- Potential bugs
+
+Be concise but thorough. Prioritize critical issues first.</code></pre>
+            <p><strong>Note:</strong> This simplified format is ideal for sub-agents - minimal frontmatter, direct system prompt, focused purpose.</p>
+
+            <h3>Full-Featured Agent</h3>
+            <pre><code>advanced-agent/
+├── AGENTS.md
+├── README.md
+├── LICENSE
+├── versions/
+│   ├── v1.0.0/
+│   │   └── AGENTS.md
+│   └── v2.0.0/
+│       └── AGENTS.md
+├── skills/
+│   └── custom-search/
+│       ├── SKILL.md
+│       ├── resources/
+│       │   └── config.json
+│       ├── scripts/
+│       │   └── search.py
+│       └── assets/
+│           └── icon.png
+├── mcp-configs/
+│   └── filesystem.yaml
+├── examples/
+│   └── usage.md
+├── tests/
+│   └── test-scenarios.yaml
+├── docs/
+│   └── architecture.md
+└── assets/
+    └── logo.png</code></pre>
+        </section>
+
+        <hr>
+
+        <section id="changelog">
+            <h2>Changelog</h2>
+            <ul>
+                <li><strong>1.2.0</strong> (2026-01-15): MCP tool subset selection (ActiveMCP.json)
+                    <ul style="margin-top: 10px;">
+                        <li>Added <code>ActiveMCP.json</code> for selective MCP tool access (avoids context overflow)</li>
+                        <li>Restructured <code>mcp-configs/</code> to use subdirectories (one per MCP server)</li>
+                        <li>Separated tool selection (ActiveMCP.json) from connection config (config.yaml)</li>
+                        <li>Added <code>selectedTools</code> array with per-tool metadata (enabled, description, required)</li>
+                        <li>Added <code>excludedTools</code> array for explicit tool exclusion</li>
+                        <li>Added <code>contextStrategy</code> field ("subset" vs "all")</li>
+                        <li>Inspired by Langchain's custom tools.json approach</li>
+                    </ul>
+                </li>
+                <li><strong>1.1.0</strong> (2026-01-15): Claude Code sub-agent support
+                    <ul style="margin-top: 10px;">
+                        <li>Added <code>tools</code> field for explicit tool access control</li>
+                        <li>Added model alias support (<code>sonnet</code>, <code>opus</code>, <code>haiku</code>)</li>
+                        <li>Added simplified instruction format for sub-agents</li>
+                        <li>Documented structured vs simplified format detection</li>
+                        <li>Added sub-agent example</li>
+                    </ul>
+                </li>
+                <li><strong>1.0.0</strong> (2026-01-15): Initial Open Agent Format specification
+                    <ul style="margin-top: 10px;">
+                        <li>Defined directory structure</li>
+                        <li>Defined AGENTS.md format</li>
+                        <li>Specified AgentSkills.io compliance</li>
+                        <li>Added harness-specific configuration section</li>
+                        <li>Documented version history support</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section id="license">
+            <h2>License</h2>
+            <p>This specification is released under CC0 1.0 Universal (Public Domain).</p>
+
+            <h2>Contributing</h2>
+            <p>This is a living specification. Feedback, proposals, and contributions are welcome.</p>
+
+            <h2>References</h2>
+            <ul>
+                <li><a href="https://agents.md/" target="_blank">AGENTS.md Standard</a></li>
+                <li><a href="https://agentskills.io/" target="_blank">AgentSkills.io Specification</a></li>
+                <li><a href="https://semver.org/" target="_blank">Semantic Versioning</a></li>
+                <li><a href="https://spdx.org/licenses/" target="_blank">SPDX License List</a></li>
+                <li><a href="https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation" target="_blank">Agentic AI Foundation</a></li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Open Agent Format Specification v1.2.0</p>
+            <p>Released under CC0 1.0 Universal (Public Domain)</p>
+            <p style="margin-top: 10px;">
+                Built with support from the <a href="https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation" target="_blank">Agentic AI Foundation</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
