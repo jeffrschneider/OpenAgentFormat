@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Agent Format (OAF) - Universal AI Agent Specification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f9f9f9;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .version {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 15px;
+        }
+
+        .notice {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .notice h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .notice p {
+            color: #856404;
+        }
+
+        section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h3 {
+            color: #34495e;
+            margin: 25px 0 15px 0;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .principle {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .principle h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .principle p {
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .cta {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin: 10px;
+        }
+
+        .button:hover {
+            background: #2980b9;
+        }
+
+        .button.secondary {
+            background: #95a5a6;
+        }
+
+        .button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .vendor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .vendor-card {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .vendor-card a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .vendor-card a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Open Agent Format</h1>
+        <div class="version">Version 1.2.0 | January 2026</div>
+        <p class="tagline">An open, interoperable format for defining AI agents</p>
+    </header>
+
+    <div class="notice">
+        <h3>New Specification Notice</h3>
+        <p>The Open Agent Format is a newly released specification. While we're working with major vendors to adopt this standard, most platforms haven't fully integrated OAF yet. We provide vendor-specific mapping guides below to help you convert between OAF and existing formats.</p>
+    </div>
+
+    <section>
+        <h2>What is Open Agent Format?</h2>
+        <p>The Open Agent Format (OAF) is an <strong>open, interoperable specification</strong> for defining AI agents with their instructions, compositions, and configurations. OAF enables you to create agents once and deploy them across multiple platforms including Claude Code, Goose, Deep Agents, Letta, and others.</p>
+
+        <p>Think of OAF as a universal language for AI agents - write your agent definition in OAF format, and it can work anywhere.</p>
+    </section>
+
+    <section>
+        <h2>Core Design Principles</h2>
+        <div class="principles">
+            <div class="principle">
+                <h4>Filesystem as Truth</h4>
+                <p>The directory structure and files define the agent - no hidden state or configuration</p>
+            </div>
+            <div class="principle">
+                <h4>Interoperable</h4>
+                <p>Works across Claude Code, Goose, Deep Agents, Letta, and other harnesses</p>
+            </div>
+            <div class="principle">
+                <h4>Composable</h4>
+                <p>Agents reference skills, packs, weblets, MCPs, and other agents</p>
+            </div>
+            <div class="principle">
+                <h4>Version-aware</h4>
+                <p>Built-in semantic versioning and version history support</p>
+            </div>
+            <div class="principle">
+                <h4>Human-readable</h4>
+                <p>Markdown for instructions, YAML for metadata - easy to read and edit</p>
+            </div>
+            <div class="principle">
+                <h4>Harness-agnostic</h4>
+                <p>Core format is independent of any specific platform</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Key Features</h2>
+        <ul>
+            <li><strong>Single Manifest File:</strong> All agent configuration in one <code>AGENTS.md</code> file</li>
+            <li><strong>Skills Integration:</strong> Compatible with <a href="https://agentskills.io/" target="_blank">AgentSkills.io</a> specification</li>
+            <li><strong>MCP Support:</strong> Built-in Model Context Protocol server configuration</li>
+            <li><strong>Sub-Agent Delegation:</strong> Compose complex agents from simpler specialized agents</li>
+            <li><strong>Tool Subset Selection:</strong> Avoid context overflow with selective tool access via <code>ActiveMCP.json</code></li>
+            <li><strong>Compliant with Standards:</strong> Built on <a href="https://agents.md/" target="_blank">AGENTS.md</a> and AgentSkills.io specifications</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Quick Example</h2>
+        <p>A minimal OAF agent requires just one file:</p>
+        <pre><code>my-agent/
+└── AGENTS.md</code></pre>
+
+        <p>The <code>AGENTS.md</code> file contains YAML frontmatter with metadata and Markdown instructions:</p>
+        <pre><code>---
+name: "My Assistant"
+vendorKey: "acme"
+agentKey: "assistant"
+version: "1.0.0"
+slug: "acme/assistant"
+description: "A helpful AI assistant"
+author: "@acme"
+license: "MIT"
+tags: ["assistant", "general"]
+---
+
+# Agent Purpose
+I am a helpful AI assistant that can answer questions and help with tasks...</code></pre>
+    </section>
+
+    <section>
+        <h2>Vendor Format Mapping Guides</h2>
+        <p>Since OAF is a new specification, we provide mapping guides to help you convert between OAF and existing vendor formats:</p>
+
+        <div class="vendor-list">
+            <div class="vendor-card">
+                <a href="claude-code-mapping.html">Claude Code</a>
+                <p>Convert to/from Claude Code skills format</p>
+            </div>
+            <div class="vendor-card">
+                <a href="goose-mapping.html">Goose</a>
+                <p>Convert to/from Goose extensions format</p>
+            </div>
+            <div class="vendor-card">
+                <a href="deep-agents-mapping.html">Deep Agents</a>
+                <p>Convert to/from Deep Agents format</p>
+            </div>
+            <div class="vendor-card">
+                <a href="letta-mapping.html">Letta</a>
+                <p>Convert to/from Letta Agent File format</p>
+            </div>
+        </div>
+
+        <p style="margin-top: 20px; color: #7f8c8d; font-size: 0.95em;">
+            <em>Note: These mapping pages are coming soon. We're working with each vendor to ensure accurate conversion procedures.</em>
+        </p>
+    </section>
+
+    <div class="cta">
+        <a href="../OPEN_AGENT_FORMAT.md" class="button">Read Full Specification</a>
+        <a href="https://github.com/jeffrschneider/OpenAgentFormat" class="button secondary">View on GitHub</a>
+    </div>
+
+    <section>
+        <h2>Getting Started</h2>
+        <p>Ready to create your first OAF agent? Here's what you need to know:</p>
+        <ol>
+            <li><strong>Create a directory</strong> for your agent (e.g., <code>my-vendor/my-agent/</code>)</li>
+            <li><strong>Add an AGENTS.md file</strong> with metadata and instructions</li>
+            <li><strong>Optionally add skills, MCP configs, or sub-agents</strong> as needed</li>
+            <li><strong>Deploy to your preferred harness</strong> using the mapping guides above</li>
+        </ol>
+
+        <p>For detailed specifications, examples, and best practices, see the <a href="../OPEN_AGENT_FORMAT.md">full documentation</a>.</p>
+    </section>
+
+    <section>
+        <h2>Contributing</h2>
+        <p>The Open Agent Format is a living specification. We welcome feedback, proposals, and contributions from the community. If you'd like to contribute or suggest improvements:</p>
+        <ul>
+            <li>Open an issue or pull request on <a href="https://github.com/jeffrschneider/OpenAgentFormat" target="_blank">GitHub</a></li>
+            <li>Join the discussion in the community forums</li>
+            <li>Help us improve vendor mapping guides</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Open Agent Format Specification v1.2.0</p>
+        <p>Released under CC0 1.0 Universal (Public Domain)</p>
+        <p style="margin-top: 10px;">
+            Built with support from the <a href="https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation" target="_blank">Agentic AI Foundation</a>
+        </p>
+    </footer>
+</body>
+</html>
