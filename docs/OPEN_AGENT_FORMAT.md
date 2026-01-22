@@ -28,7 +28,7 @@ An agent in OAF is a **directory** containing multiple files and subdirectories.
 ### Complete Structure (with all optional directories)
 
 ```
-vendor-name/agent-name/
+agent-name/
 ├── AGENTS.md                    # Main manifest (required)
 ├── README.md                    # Human documentation (generated if absent)
 ├── LICENSE                      # License file (generated if absent)
@@ -88,7 +88,7 @@ vendor-name/agent-name/
 At minimum, an OAF agent requires only:
 
 ```
-vendor-name/agent-name/
+agent-name/
 └── AGENTS.md
 ```
 
@@ -853,17 +853,26 @@ Export procedures and tooling specifics are implementation-defined and not part 
 
 OAF agents can be packaged as `.oaf` files for distribution. A `.oaf` file is a standard zip archive containing one or more agents.
 
-### Package Structure
+### Single Agent Package
 
 ```
-my-package-1.0.0.oaf (zip)
+my-agent-1.0.0.oaf (zip)
 ├── PACKAGE.yaml                    # Package manifest (required)
-├── vendor--agent-one/              # Agent directory (at least one required)
+└── my-agent/                       # Agent directory
+    └── AGENTS.md
+```
+
+### Multi-Agent Package
+
+```
+dev-tools-1.0.0.oaf (zip)
+├── PACKAGE.yaml                    # Package manifest (required)
+├── code-reviewer/                  # Agent directories
 │   ├── AGENTS.md
 │   └── skills/
-├── vendor--agent-two/
+├── test-runner/
 │   └── AGENTS.md
-└── vendor--agent-three/
+└── doc-writer/
     ├── AGENTS.md
     └── mcp-configs/
 ```
@@ -878,11 +887,11 @@ formatVersion: "1.0.0"
 version: "1.0.0"                    # Package version
 
 agents:
-  - slug: "vendor/agent-one"
+  - slug: "acme/code-reviewer"
     version: "1.2.0"
-  - slug: "vendor/agent-two"
+  - slug: "acme/test-runner"
     version: "2.0.0"
-  - slug: "vendor/agent-three"
+  - slug: "acme/doc-writer"
     version: "1.0.0"
 
 contents:
