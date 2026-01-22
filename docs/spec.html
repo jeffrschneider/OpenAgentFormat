@@ -1572,6 +1572,51 @@ permissions:
 
         <hr>
 
+        <section id="packaging">
+            <h2>Packaging</h2>
+            <p>OAF agents can be packaged as <code>.oaf</code> files for distribution. A <code>.oaf</code> file is a standard zip archive containing one or more agents.</p>
+
+            <h3>Package Structure</h3>
+            <pre><code>my-package-1.0.0.oaf (zip)
+├── PACKAGE.yaml                    # Package manifest (required)
+├── vendor--agent-one/              # Agent directory (at least one required)
+│   ├── AGENTS.md
+│   └── skills/
+├── vendor--agent-two/
+│   └── AGENTS.md
+└── vendor--agent-three/
+    ├── AGENTS.md
+    └── mcp-configs/</code></pre>
+            <p>Agents are stored flat at the root level. Each agent directory is self-contained—shared resources across agents are not supported.</p>
+
+            <h3>PACKAGE.yaml</h3>
+            <pre><code>format: "oaf-package"
+formatVersion: "1.0.0"
+version: "1.0.0"                    # Package version
+
+agents:
+  - slug: "vendor/agent-one"
+    version: "1.2.0"
+  - slug: "vendor/agent-two"
+    version: "2.0.0"
+  - slug: "vendor/agent-three"
+    version: "1.0.0"
+
+contents:
+  mode: "bundled"                   # All content included in package</code></pre>
+
+            <h3>Required Files</h3>
+            <ul>
+                <li><code>PACKAGE.yaml</code> - Package manifest</li>
+                <li>At least one agent directory containing <code>AGENTS.md</code></li>
+            </ul>
+
+            <h3>Harness Provider Responsibilities</h3>
+            <p>The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use <code>curl</code> to fetch a <code>.oaf</code> file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.</p>
+        </section>
+
+        <hr>
+
         <section id="validation">
             <h2>Validation (Informative)</h2>
             <p>While validation is implementation-defined, OAF suggests validating:</p>
