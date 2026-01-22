@@ -1,7 +1,7 @@
 # Open Agent Format (OAF) Specification
 
-**Version:** 1.2.0
-**Date:** 2026-01-15
+**Version:** 0.8.0
+**Date:** 2026-01-21
 **Status:** Draft
 
 ---
@@ -846,6 +846,57 @@ OAF is designed to export to multiple harness formats:
 | **Letta** | `agent-name.af` | Converts to Agent File JSON |
 
 Export procedures and tooling specifics are implementation-defined and not part of this specification.
+
+---
+
+## Packaging
+
+OAF agents can be packaged as `.oaf` files for distribution. A `.oaf` file is a standard zip archive containing one or more agents.
+
+### Package Structure
+
+```
+my-package-1.0.0.oaf (zip)
+├── PACKAGE.yaml                    # Package manifest (required)
+├── vendor--agent-one/              # Agent directory (at least one required)
+│   ├── AGENTS.md
+│   └── skills/
+├── vendor--agent-two/
+│   └── AGENTS.md
+└── vendor--agent-three/
+    ├── AGENTS.md
+    └── mcp-configs/
+```
+
+Agents are stored flat at the root level. Each agent directory is self-contained—shared resources across agents are not supported.
+
+### PACKAGE.yaml
+
+```yaml
+format: "oaf-package"
+formatVersion: "1.0.0"
+version: "1.0.0"                    # Package version
+
+agents:
+  - slug: "vendor/agent-one"
+    version: "1.2.0"
+  - slug: "vendor/agent-two"
+    version: "2.0.0"
+  - slug: "vendor/agent-three"
+    version: "1.0.0"
+
+contents:
+  mode: "bundled"                   # All content included in package
+```
+
+### Required Files
+
+- `PACKAGE.yaml` - Package manifest
+- At least one agent directory containing `AGENTS.md`
+
+### Harness Provider Responsibilities
+
+The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use `curl` to fetch a `.oaf` file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.
 
 ---
 
