@@ -1598,16 +1598,16 @@ https://example.com/.well-known/skills/{skill-name}/SKILL.md</code></pre>
 
         <section id="packaging">
             <h2>Packaging</h2>
-            <p>OAF agents can be packaged as <code>.oaf</code> files for distribution. A <code>.oaf</code> file is a standard zip archive containing one or more agents.</p>
+            <p>OAF agents can be packaged as <code>.zip</code> files for distribution. A <code>.zip</code> file is a standard zip archive containing one or more agents.</p>
 
             <h3>Single Agent Package</h3>
-            <pre><code>my-agent-1.0.0.oaf (zip)
+            <pre><code>my-agent-1.0.0.zip
 ├── PACKAGE.yaml                    # Package manifest (required)
 └── my-agent/                       # Agent directory
     └── AGENTS.md</code></pre>
 
             <h3>Multi-Agent Package</h3>
-            <pre><code>dev-tools-1.0.0.oaf (zip)
+            <pre><code>dev-tools-1.0.0.zip
 ├── PACKAGE.yaml                    # Package manifest (required)
 ├── code-reviewer/                  # Agent directories
 │   ├── AGENTS.md
@@ -1663,7 +1663,7 @@ contents:
             </ul>
 
             <h3>Harness Provider Responsibilities</h3>
-            <p>The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use <code>curl</code> to fetch a <code>.oaf</code> file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.</p>
+            <p>The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use <code>curl</code> to fetch a <code>.zip</code> file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.</p>
         </section>
 
         <hr>

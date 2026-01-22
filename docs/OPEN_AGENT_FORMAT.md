@@ -886,12 +886,12 @@ The harness fetches the skill from the well-known URI at install time.
 
 ## Packaging
 
-OAF agents can be packaged as `.oaf` files for distribution. A `.oaf` file is a standard zip archive containing one or more agents.
+OAF agents can be packaged as `.zip` files for distribution. A `.zip` file is a standard zip archive containing one or more agents.
 
 ### Single Agent Package
 
 ```
-my-agent-1.0.0.oaf (zip)
+my-agent-1.0.0.zip
 ├── PACKAGE.yaml                    # Package manifest (required)
 └── my-agent/                       # Agent directory
     └── AGENTS.md
@@ -900,7 +900,7 @@ my-agent-1.0.0.oaf (zip)
 ### Multi-Agent Package
 
 ```
-dev-tools-1.0.0.oaf (zip)
+dev-tools-1.0.0.zip
 ├── PACKAGE.yaml                    # Package manifest (required)
 ├── code-reviewer/                  # Agent directories
 │   ├── AGENTS.md
@@ -949,7 +949,7 @@ With `mode: "referenced"`, the package contains only the AGENTS.md files. Skills
 
 ### Harness Provider Responsibilities
 
-The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use `curl` to fetch a `.oaf` file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.
+The OAF spec defines the package format only. Harness providers are responsible for tooling to download, unpack, and install packages. A simple implementation may use `curl` to fetch a `.zip` file from a URL and unzip it to the appropriate location. Advanced implementations may offer CLI commands, dependency resolution, or registry integration.
 
 ---
 
