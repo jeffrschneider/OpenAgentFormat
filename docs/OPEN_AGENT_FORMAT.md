@@ -121,17 +121,16 @@ tags: ["tag1", "tag2", "tag3"]
 
 # === COMPOSITION (Optional) ===
 
-# Skills - References to skills (registry or local)
+# Skills - References to skills (local, registry, or well-known URL)
 skills:
-  - vendor: "anthropic"
-    skill: "web-search"
+  - name: "web-search"
+    source: "https://anthropic.com/.well-known/skills/web-search"
     version: "1.2.0"
-    source: "registry"        # "registry" or "local"
-    required: true            # true or false
-  - vendor: "local"
-    skill: "custom-tool"
-    version: "1.0.0"
+    required: true
+  - name: "custom-tool"
     source: "local"           # References ./skills/custom-tool/
+    version: "1.0.0"
+    required: false
 
 # Packs - Collections of skills
 packs:
@@ -423,10 +422,9 @@ You are a code reviewer. When invoked, analyze the code and provide specific, ac
 #### Skills
 | Field | Type | Description |
 |-------|------|-------------|
-| `vendor` | string | Skill vendor namespace |
-| `skill` | string | Skill identifier |
+| `name` | string | Skill identifier |
+| `source` | string | `"local"` (references ./skills/{name}/), or a well-known URL |
 | `version` | string | Semantic version or version constraint |
-| `source` | string | "registry" or "local" |
 | `required` | boolean | Whether skill is mandatory |
 
 #### Packs
@@ -849,6 +847,43 @@ Export procedures and tooling specifics are implementation-defined and not part 
 
 ---
 
+## Skill Discovery
+
+OAF supports skill discovery via well-known URIs, following the [Agent Skills Discovery RFC](https://github.com/cloudflare/agent-skills-discovery-rfc).
+
+### Well-Known URI Structure
+
+Organizations can publish skills at a standard location:
+
+```
+https://example.com/.well-known/skills/index.json    # Skill index
+https://example.com/.well-known/skills/{skill-name}/ # Skill directory
+https://example.com/.well-known/skills/{skill-name}/SKILL.md
+```
+
+### Referencing Well-Known Skills
+
+In AGENTS.md, reference skills by their well-known URL:
+
+```yaml
+skills:
+  - name: "pdf-processing"
+    source: "https://example.com/.well-known/skills/pdf-processing"
+    version: "1.0.0"
+    required: true
+```
+
+The harness fetches the skill from the well-known URI at install time.
+
+### Benefits
+
+- **Clear provenance**: Skills come from verified domain owners
+- **Always current**: Fetched at install time, not bundled
+- **Smaller packages**: No need to duplicate common skills
+- **Standard discovery**: Agents can discover available skills via `index.json`
+
+---
+
 ## Packaging
 
 OAF agents can be packaged as `.oaf` files for distribution. A `.oaf` file is a standard zip archive containing one or more agents.
@@ -895,8 +930,17 @@ agents:
     version: "1.0.0"
 
 contents:
-  mode: "bundled"                   # All content included in package
+  mode: "bundled"                   # or "referenced"
 ```
+
+### Contents Mode
+
+| Mode | Description |
+|------|-------------|
+| `bundled` | All skills and dependencies are included in the package. Self-contained, works offline. |
+| `referenced` | Skills with well-known URLs are fetched at install time. Smaller packages, always up-to-date. |
+
+With `mode: "referenced"`, the package contains only the AGENTS.md files. Skills referenced via well-known URLs are fetched by the harness during installation.
 
 ### Required Files
 
