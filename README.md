@@ -1,5 +1,7 @@
 # Open Agent Format (OAF)
 
+> **Retired.** The Open Agent Format is no longer maintained, and openagentformat.com now redirects to the Common Agent Standards at [commonagent.net](https://commonagent.net/package.html). This repository is archived; the v0.8.0 text below stays available under CC0.
+
 **Version:** 0.8.0 | **Status:** Draft
 
 The Open Agent Format (OAF) is an open, interoperable specification for defining AI agents. It provides a standard way to describe agents with their instructions, compositions, and configurations—portable across any agent harness.
